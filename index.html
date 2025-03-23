@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clan Battle Attendance | CRRZY</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #121212;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+        h1 {
+            color: #f39c12;
+        }
+        .container {
+            max-width: 400px;
+            margin: auto;
+            background: #1e1e1e;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(255, 165, 0, 0.5);
+        }
+        input, button {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: none;
+            font-size: 16px;
+        }
+        input {
+            background: #333;
+            color: white;
+        }
+        button {
+            background: #f39c12;
+            color: black;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #e67e22;
+        }
+        .attendance-list {
+            text-align: left;
+            margin-top: 20px;
+        }
+        .player {
+            background: #2c2c2c;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>CRRZY Clan Battle Attendance</h1>
+    <div class="container">
+        <h2>Mark Your Attendance</h2>
+        <input type="text" id="playerName" placeholder="Enter your name">
+        <button onclick="markAttendance()">Confirm Attendance</button>
+        <h2>Attendees</h2>
+        <div class="attendance-list" id="attendanceList"></div>
+    </div>
+
+    <script>
+        function markAttendance() {
+            let name = document.getElementById("playerName").value.trim();
+            if (name === "") {
+                alert("Please enter your name!");
+                return;
+            }
+
+            let attendees = JSON.parse(localStorage.getItem("attendees")) || [];
+
+            if (attendees.some(player => player.name.toLowerCase() === name.toLowerCase())) {
+                alert("You have already marked attendance!");
+                return;
+            }
+
+            let timestamp = new Date().toLocaleString();
+            attendees.push({ name, timestamp });
+
+            localStorage.setItem("attendees", JSON.stringify(attendees));
+            displayAttendance();
+            document.getElementById("playerName").value = "";
+        }
+
+        function displayAttendance() {
+            let attendees = JSON.parse(localStorage.getItem("attendees")) || [];
+            let attendanceList = document.getElementById("attendanceList");
+            attendanceList.innerHTML = "";
+
+            attendees.forEach(player => {
+                let div = document.createElement("div");
+                div.classList.add("player");
+                div.innerHTML = `<strong>${player.name}</strong> <br> <small>${player.timestamp}</small>`;
+                attendanceList.appendChild(div);
+            });
+        }
+
+        document.addEventListener("DOMContentLoaded", displayAttendance);
+    </script>
+
+</body>
+</html>
